@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Teste</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;padding:14px;font-size:16px}
+.l{padding:7px 0;border-bottom:1px solid #334155}
+.ok{color:#4ade80}.no{color:#f87171}
+</style></head>
+<body>
+<h2>Teste das 25 ações</h2>
+<div id="r">A testar...</div>
+<script>
+const L=['PLTR','APP','CRWD','NOW','SNOW','DDOG','NET','MDB','ZS','PANW','TTD','DUOL','HIMS','RDDT','CELH','AXON','ANET','VRT','SOUN','RKLB','IOT','S','GTLB','PATH','TEM'];
+const k=localStorage.getItem('fmpKey');
+const r=document.getElementById('r');
+async function testar(){
+  if(!k){r.textContent='Sem chave guardada. Abra primeiro a app Radar Palantir e guarde a chave.';return;}
+  let html='',boas=0;
+  for(const s of L){
+    r.innerHTML=html+'<div class="l">A testar '+s+'...</div>';
+    try{
+      const x=await fetch('https://financialmodelingprep.com/stable/income-statement?symbol='+s+'&period=quarter&limit=5&apikey='+k);
+      const t=await x.text();
+      const d=JSON.parse(t);
+      if(Array.isArray(d)&&d.length>=5){boas++;html+='<div class="l"><b>'+s+'</b> <span class="ok">✔ funciona</span></div>';}
+      else{html+='<div class="l"><b>'+s+'</b> <span class="no">✘ não funciona</span></div>';}
+    }catch(e){
+      html+='<div class="l"><b>'+s+'</b> <span class="no">✘ não funciona</span></div>';
+    }
+  }
+  r.innerHTML='<div class="l"><b>Funcionam: '+boas+' de '+L.length+'</b></div>'+html;
+}
+testar();
+</script>
+</body></html>
